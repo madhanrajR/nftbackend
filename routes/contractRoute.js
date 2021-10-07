@@ -5,8 +5,8 @@ var parser = require('../lib/nonDfuseParser')
 
 router.post('/storeNftAddress', async function (req, res, next) {
   if (!req.body) return res.status(500).send("Invalid Inputs!");
-  let {contract_address, creater_address } = req.body;
-  if (!contract_address || !creater_address ) return res.status(500).send("Invalid Inputs!");
+  let {contract_address,symbol, creater_address } = req.body;
+  if (!contract_address || !creater_address || !symbol) return res.status(500).send("Invalid Inputs!");
   let result = await parser.storeNftAddress(req.body);
   return res.status(200).send(result);
 });
