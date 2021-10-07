@@ -4,6 +4,10 @@ var nftOwnershipSchema = new mongoose.Schema({
       type: String,
       required:true
     },
+    symbol: {
+      type: String,
+      required:true
+    },
     creater_address: {
       type: String,
       required:true
