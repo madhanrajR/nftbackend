@@ -8,9 +8,23 @@ const Basket =require('../models/basket');
 // const { resolve } = require('q');
 
 var queries = { 
-  nftContractByCreatorAddress: function (creater_address) {
+  nftContractByCreatorAddress1: function (creater_address) {
     return new Promise(function (resolve, reject) {
       NftOwnership.find({creater_address:creater_address}).exec(function (error, data) {
+        if (error) return resolve({
+          "status": false,
+          "data": error
+        });
+        return resolve({
+          "status": true,
+          "data": data
+        });
+      });
+    });
+  },
+  nftContractByCreatorAddress: function () {
+    return new Promise(function (resolve, reject) {
+      NftOwnership.find().exec(function (error, data) {
         if (error) return resolve({
           "status": false,
           "data": error

@@ -30,13 +30,18 @@ router.get('/getAllNfts', async function (req, res) {
   return res.status(200).send(result);
 });
 
-router.get('/nftContractByCreatorAddress', async function (req, res) {
+router.get('/nftContractByCreatorAddress1', async function (req, res) {
   if (!req.query.creater_address) return res.status(500).send("Invalid Inputs!");
   let creater_address = req.query.creater_address;
-  let result = await parser.nftContractByCreatorAddress(creater_address);
+  let result = await parser.nftContractByCreatorAddress1(creater_address);
   return res.status(200).send(result);
 });
-
+router.get('/nftContractByCreatorAddress', async function (req, res) {
+ // if (!req.query.creater_address) return res.status(500).send("Invalid Inputs!");
+ // let creater_address = req.query.creater_address;
+  let result = await parser.nftContractByCreatorAddress();
+  return res.status(200).send(result);
+});
 router.get('/nftsByOwnerAddress', async function (req, res) {
   if (!req.query.owner_address) return res.status(500).send("Invalid Inputs!");
   let owner_address = req.query.owner_address;
