@@ -1,6 +1,8 @@
 const Nft = require('../models/nft');
 const NftOwnership = require('../models/nftOwnership');
 const Basket =require('../models/basket');
+const BlockNo = require('../models/Block');
+const Nftcurrentowner = require('../models/nftcurrentowner');
 // var _ = require('lodash');
 // const { uuid } = require('uuidv4');
 
@@ -121,6 +123,21 @@ var queries = {
       });
     });
   },
+  nftstokenByOwnerAddress: function (owner_address,contract_address) {
+   // console.log(owner_address,contract_address)
+    return new Promise(function (resolve, reject) {
+      Nftcurrentowner.find({owner_address:owner_address,contract_address:contract_address}).exec(function (error, data) {
+        if (error) return resolve({
+          "status": false,
+          "data": error
+        });
+        return resolve({
+          "status": true,
+          "data": data
+        });
+      });
+    });
+  },
   basketcreate: function (data) {
     console.log('basketcreate',data)
     return new Promise(function (resolve, reject) {
@@ -223,6 +240,77 @@ var queries = {
           $set: { liquidated: liquidated},
         }
       ).exec(function (error, data) {
+        if (error) return resolve({
+          "status": false,
+          "data": error
+        });
+        return resolve({
+          "status": true,
+          "data": data
+        });
+      });
+    });
+  },
+  updateListenerStatus: function (network_name, block_num) {
+    BlockNo.findOneAndUpdate(
+      { networkName: network_name },
+      { $set: { blockNumber: block_num } },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+      function (err, doc) {
+        if (err) { console.log("something wrong while updating data!", err); }
+        console.log("block sync updated in db", doc.blockNumber);
+       //token_queries.checkForTokenDistribution(doc.networkName, doc.blockNumber)
+      });
+  },
+
+  getNetworkInfo: function (networkName) {
+    return new Promise(function (resolve, reject) {
+      BlockNo.findOne({
+        networkName: networkName
+      }, async function (err, doc) {
+        if (err || !doc) return resolve({ status: false, msg: "network not found" });
+        return resolve({ status: true, msg: doc });
+      });
+    });
+  },
+
+  setListenerInfo: function (networkName, set) {
+    return new Promise(function (resolve, reject) {
+      BlockNo.findOneAndUpdate({
+        networkName: networkName
+      }, {
+          $set: set
+        }, {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true
+        }, function (err, doc) {
+          if (err) return resolve({ status: false, msg: "Something wrong when updating data!" });
+          return resolve({ status: true, msg: doc });
+        });
+    });
+  },
+  setnewListenerInfo: function (networkName, set) {
+    return new Promise(function (resolve, reject) {
+      BlockNo.create(set, function (err, doc) {
+          if (err) return resolve({ status: false, msg: "Something wrong when updating data!" });
+          return resolve({ status: true, msg: doc });
+        });
+    });
+  },
+  mintNft1: function (data) {
+    return new Promise(function (resolve, reject) {
+     // Nftcurrentowner.create(data, function (error, data) {
+      Nftcurrentowner.findOneAndUpdate({
+        contract_address: data.contract_address,token_id:data.token_id
+      }, {
+          $set: data
+        }, {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true
+        },
+        function (error, data) {
         if (error) return resolve({
           "status": false,
           "data": error

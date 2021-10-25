@@ -48,6 +48,14 @@ router.get('/nftsByOwnerAddress', async function (req, res) {
   let result = await parser.nftsByOwnerAddress(owner_address);
   return res.status(200).send(result);
 });
+
+router.get('/nftstokenByOwnerAddress', async function (req, res) {
+  if (!req.query.owner_address) return res.status(500).send("Invalid Inputs!");
+  let owner_address = req.query.owner_address;
+  let contract_address = req.query.contract_address;
+  let result = await parser.nftstokenByOwnerAddress(owner_address,contract_address);
+  return res.status(200).send(result);
+});
 router.post('/basketcreate', async function (req, res, next) {
 console.log(req,res);
   if (!req.body) return res.status(500).send("Invalid Inputs!");
