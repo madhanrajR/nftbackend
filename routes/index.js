@@ -60,6 +60,7 @@ async function processstart() {
     // if (req.body.token) set.token = req.body.token;
   
     let info = await queries.mintNft1(set);
+    await queries.updateListenerStatus('rinkbe',events.blockNumber);
     })
    // console.log(i,(j+1))
    
@@ -81,14 +82,14 @@ async function processstart() {
       fromBlock: network_info.msg.blockNumber+1,
       toBlock: 'latest'
     },async function(error, events){
-      //console.log('events',events)
+      console.log('events',events)
       for( let i=0;i< events.length;i++) {
 
         await eventdata(events[i],element.contract_address,element.creater_address);
-        if(tokenaddress.data.length==(index+1))
-        {
-          await queries.updateListenerStatus('rinkbe',events[i].blockNumber)
-        }
+        // if(tokenaddress.data.length==(index+1))
+        // {
+          // await queries.updateListenerStatus('rinkbe',events[i].blockNumber)
+       // }
       } 
     
     });
